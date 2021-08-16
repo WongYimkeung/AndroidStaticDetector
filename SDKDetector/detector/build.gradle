@@ -1,0 +1,28 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+    id 'java'
+}
+
+group 'org.example'
+version '1.0.0'
+
+jar {
+    manifest {
+        attributes 'version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    implementation 'com.itextpdf:itext7-core:7.0.2'
+}
+
+test {
+    useJUnitPlatform()
+}
