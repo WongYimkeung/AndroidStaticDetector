@@ -22,7 +22,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
-    implementation files('lib/detector-1.0.0.jar')
+//    implementation files('lib/detector-1.0.0.jar')
+    implementation project(path: ':detector')
 }
 
 test {

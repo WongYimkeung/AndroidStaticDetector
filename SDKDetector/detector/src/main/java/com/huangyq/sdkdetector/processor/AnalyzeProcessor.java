@@ -28,21 +28,31 @@ public class AnalyzeProcessor implements Processor {
     @Override
     public boolean process(Context context) {
         this.context = context;
-        if (processSmaliPath(context.getSmaliPath())) {
+        if (processSmaliPath(context.getDirName())) {
             return processor.process(context);
         }
         return false;
     }
 
-    private boolean processSmaliPath(String smaliPath) {
+    private boolean processSmaliPath(String dirName) {
         LogUtil.start("AnalyzeProcessor");
-        File smaliPathFile = new File(smaliPath);
-        if (!smaliPathFile.exists()) {
-            LogUtil.e("smaliPath " + smaliPath + " is not exists");
+        File decompileDir = new File(dirName);
+        if (!decompileDir.exists()) {
+            LogUtil.e("dirName " + dirName + " is not exists");
             return false;
         }
 
-        processDir(smaliPathFile);
+        File[] fileList = decompileDir.listFiles();
+        if (null == fileList || fileList.length == 0) {
+            return false;
+        }
+
+        for (File file : fileList) {
+            if (file.isDirectory() && file.getName().startsWith(STRING_SMALI)) {
+                LogUtil.d("processSmaliPath " + file.getName());
+                processDir(file);
+            }
+        }
         LogUtil.end("AnalyzeProcessor");
         return true;
     }

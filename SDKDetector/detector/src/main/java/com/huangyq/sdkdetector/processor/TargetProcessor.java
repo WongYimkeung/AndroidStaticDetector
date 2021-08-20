@@ -7,6 +7,7 @@ import com.huangyq.sdkdetector.util.IOUtil;
 import com.huangyq.sdkdetector.util.LogUtil;
 import com.huangyq.sdkdetector.util.SmaliUtil;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -29,9 +30,12 @@ public class TargetProcessor implements Processor {
         LogUtil.start("TargetFileProcessor");
         try {
             // 注意要使用TargetFileSmaliPath进行解析
-            List<String> targetFileStringList = IOUtil.read(context.getTargetFileSmaliPath());
-            for (String str : targetFileStringList) {
-                processTargetFileString(str);
+            String path = findTargetFileSmaliPath(context.getDirName());
+            if (null != path) {
+                List<String> targetFileStringList = IOUtil.read(path);
+                for (String str : targetFileStringList) {
+                    processTargetFileString(str);
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -48,6 +52,37 @@ public class TargetProcessor implements Processor {
         LogUtil.end("TargetFileProcessor");
 
         return processor.process(this.context);
+    }
+
+    /**
+     * 处理分包情况下的接口文件路径
+     *
+     * @param dirName 反编译文件夹名称
+     * @return 接口文件路径
+     */
+    private String findTargetFileSmaliPath(String dirName) {
+        File decompileDir = new File(dirName);
+        if (!decompileDir.exists()) {
+            return null;
+        }
+
+        File[] files = decompileDir.listFiles();
+        if (null == files || files.length == 0) {
+            return null;
+        }
+
+        for (File file : files) {
+            if (file.isDirectory() && file.getName().startsWith(STRING_SMALI)) {
+                File targetFile = new File(file.getPath() + File.separator +
+                        context.getTargetFileWithSmaliSuffix());
+                if (targetFile.exists()) {
+                    LogUtil.r(targetFile.getPath());
+                    return targetFile.getPath();
+                }
+            }
+        }
+
+        return null;
     }
 
     private void processTargetFileString(String str) {

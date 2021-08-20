@@ -2,12 +2,10 @@ package com.huangyq.sdkdetector;
 
 import com.huangyq.sdkdetector.info.MethodInfo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.huangyq.sdkdetector.Constant.STRING_SMALI;
 import static com.huangyq.sdkdetector.Constant.STRING_SMALI_SUFFIX;
 
 public class Context {
@@ -59,11 +57,7 @@ public class Context {
         return methodInfoList;
     }
 
-    public String getSmaliPath() {
-        return dirName + File.separator + STRING_SMALI + File.separator;
-    }
-
-    public String getTargetFileSmaliPath() {
-        return getSmaliPath() + targetFile + STRING_SMALI_SUFFIX;
+    public String getTargetFileWithSmaliSuffix() {
+        return targetFile + STRING_SMALI_SUFFIX;
     }
 }

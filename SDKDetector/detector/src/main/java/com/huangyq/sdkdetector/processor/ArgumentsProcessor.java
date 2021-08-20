@@ -132,7 +132,6 @@ public class ArgumentsProcessor implements Processor {
     private void handleTargetFile(String targetFile) {
         context.setTargetFile(targetFile);
         LogUtil.r("handleTargetFile targetFile = " + context.getTargetFile());
-        LogUtil.r("handleTargetFile targetFilePath = " + context.getTargetFileSmaliPath());
     }
 
     private void handleTargetSource(String targetSource) {
