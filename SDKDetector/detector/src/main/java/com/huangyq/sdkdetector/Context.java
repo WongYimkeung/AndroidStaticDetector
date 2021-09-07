@@ -1,21 +1,26 @@
 package com.huangyq.sdkdetector;
 
 import com.huangyq.sdkdetector.info.MethodInfo;
+import com.huangyq.sdkdetector.info.PermissionInfo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.huangyq.sdkdetector.Constant.STRING_ANDROID_MANIFEST;
 import static com.huangyq.sdkdetector.Constant.STRING_SMALI_SUFFIX;
 
 public class Context {
     private String apkPath;   // 待反编译Apk路径
     private String dirName;   // 反编译内容输出文件夹
-    private String targetFile;  // 接口定义文件
-    private String targetSource;    // 检测内容文件
+    private String sourceFile;  // 检测内容JSON文件
+    private String interfaceFile;   // 接口定义Java文件
+    private String permissionFile;  // 权限声明JSON文件
     private final List<String> excludeDirList
             = new ArrayList<>(Arrays.asList("android", "androidx"));    // 不做检测的路径
     private final List<MethodInfo> methodInfoList = new ArrayList<>();
+    private final List<PermissionInfo> permissionInfoList = new ArrayList<>();
 
     public String getApkPath() {
         return apkPath;
@@ -33,20 +38,28 @@ public class Context {
         this.dirName = dirName;
     }
 
-    public String getTargetFile() {
-        return targetFile;
+    public String getInterfaceFile() {
+        return interfaceFile;
     }
 
-    public void setTargetFile(String targetFile) {
-        this.targetFile = targetFile;
+    public void setInterfaceFile(String interfaceFile) {
+        this.interfaceFile = interfaceFile;
     }
 
-    public String getTargetSource() {
-        return targetSource;
+    public String getSourceFile() {
+        return sourceFile;
     }
 
-    public void setTargetSource(String targetSource) {
-        this.targetSource = targetSource;
+    public void setSourceFile(String sourceFile) {
+        this.sourceFile = sourceFile;
+    }
+
+    public String getPermissionFile() {
+        return permissionFile;
+    }
+
+    public void setPermissionFile(String permissionFile) {
+        this.permissionFile = permissionFile;
     }
 
     public List<String> getExcludeDirList() {
@@ -57,7 +70,15 @@ public class Context {
         return methodInfoList;
     }
 
+    public List<PermissionInfo> getPermissionInfoList() {
+        return permissionInfoList;
+    }
+
     public String getTargetFileWithSmaliSuffix() {
-        return targetFile + STRING_SMALI_SUFFIX;
+        return interfaceFile + STRING_SMALI_SUFFIX;
+    }
+
+    public String getAndroidManifestPath() {
+        return dirName + File.separator + STRING_ANDROID_MANIFEST;
     }
 }

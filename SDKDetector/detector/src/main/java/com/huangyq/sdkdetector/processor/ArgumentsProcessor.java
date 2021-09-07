@@ -57,11 +57,14 @@ public class ArgumentsProcessor implements Processor {
                 case KEY_EXCLUDE_DIR:
                     handleExcludeDir(splitString[1]);
                     break;
-                case KEY_TARGET_FILE:
-                    handleTargetFile(splitString[1]);
+                case KEY_INTERFACE_FILE:
+                    handleInterfaceFile(splitString[1]);
                     break;
-                case KEY_TARGET_SOURCE:
-                    handleTargetSource(splitString[1]);
+                case KEY_SOURCE_FILE:
+                    handleSourceFile(splitString[1]);
+                    break;
+                case KEY_PERMISSION_FILE:
+                    handlePermissionFile(splitString[1]);
                     break;
                 default:
                     LogUtil.e("unknown arg " + splitString[0]);
@@ -87,11 +90,14 @@ public class ArgumentsProcessor implements Processor {
             if (properties.containsKey(KEY_EXCLUDE_DIR)) {
                 handleExcludeDir(properties.getProperty(KEY_EXCLUDE_DIR));
             }
-            if (properties.containsKey(KEY_TARGET_FILE)) {
-                handleTargetFile(properties.getProperty(KEY_TARGET_FILE));
+            if (properties.containsKey(KEY_INTERFACE_FILE)) {
+                handleInterfaceFile(properties.getProperty(KEY_INTERFACE_FILE));
             }
-            if (properties.containsKey(KEY_TARGET_SOURCE)) {
-                handleTargetSource(properties.getProperty(KEY_TARGET_SOURCE));
+            if (properties.containsKey(KEY_SOURCE_FILE)) {
+                handleSourceFile(properties.getProperty(KEY_SOURCE_FILE));
+            }
+            if (properties.containsKey(KEY_PERMISSION_FILE)) {
+                handlePermissionFile(properties.getProperty(KEY_PERMISSION_FILE));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -129,13 +135,18 @@ public class ArgumentsProcessor implements Processor {
         LogUtil.r("handleExcludeDir " + context.getExcludeDirList());
     }
 
-    private void handleTargetFile(String targetFile) {
-        context.setTargetFile(targetFile);
-        LogUtil.r("handleTargetFile targetFile = " + context.getTargetFile());
+    private void handleInterfaceFile(String interfaceFile) {
+        context.setInterfaceFile(interfaceFile);
+        LogUtil.r("handleInterfaceFile interfaceFile = " + context.getInterfaceFile());
     }
 
-    private void handleTargetSource(String targetSource) {
-        context.setTargetSource(targetSource);
-        LogUtil.r("handleTargetSource targetSource = " + context.getTargetSource());
+    private void handleSourceFile(String sourceFile) {
+        context.setSourceFile(sourceFile);
+        LogUtil.r("handleSourceFile sourceFile = " + context.getSourceFile());
+    }
+
+    private void handlePermissionFile(String permissionFile) {
+        context.setPermissionFile(permissionFile);
+        LogUtil.r("handlePermissionFile permissionFile = " + context.getPermissionFile());
     }
 }

@@ -1,0 +1,42 @@
+[
+  {
+    "code": "Ljava/net/InetAddress;->getHostAddress()Ljava/lang/String;",
+    "description": "获取IP地址"
+  },
+  {
+    "code": "Landroid/telephony/TelephonyManager;->getDeviceId()Ljava/lang/String;",
+    "description": "获取IMEI地址"
+  },
+  {
+    "code": "Landroid/telephony/TelephonyManager;->getImei()Ljava/lang/String;",
+    "description": "获取IMEI地址"
+  },
+  {
+    "code": "\"android_id\"",
+    "description": "获取AndroidID"
+  },
+  {
+    "code": "Landroid/net/wifi/WifiInfo;->getMacAddress()Ljava/lang/String;",
+    "description": "获取MAC地址"
+  },
+  {
+    "code": "Landroid/telephony/TelephonyManager;->getSubscriberId()Ljava/lang/String;",
+    "description": "获取IMSI地址"
+  },
+  {
+    "code": "Landroid/content/pm/PackageManager;->getInstalledPackages(I)Ljava/util/List;",
+    "description": "获取已安装应用"
+  },
+  {
+    "code": "Landroid/os/Build;->SERIAL:Ljava/lang/String;",
+    "description": "获取设备序列号"
+  },
+  {
+    "code": "Landroid/telephony/TelephonyManager;->getLine1Number()Ljava/lang/String;",
+    "description": "获取本机电话号码"
+  },
+  {
+    "code": "Landroid/location/LocationManager;->getLastKnownLocation(Ljava/lang/String;)Landroid/location/Location;",
+    "description": "使用GPS获取定位"
+  }
+]

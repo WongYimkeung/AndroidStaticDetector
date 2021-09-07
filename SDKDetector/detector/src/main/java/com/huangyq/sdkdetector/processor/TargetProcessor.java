@@ -3,9 +3,13 @@ package com.huangyq.sdkdetector.processor;
 import com.huangyq.sdkdetector.Context;
 import com.huangyq.sdkdetector.Processor;
 import com.huangyq.sdkdetector.info.MethodInfo;
+import com.huangyq.sdkdetector.info.PermissionInfo;
 import com.huangyq.sdkdetector.util.IOUtil;
 import com.huangyq.sdkdetector.util.LogUtil;
 import com.huangyq.sdkdetector.util.SmaliUtil;
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +19,6 @@ import static com.huangyq.sdkdetector.Constant.*;
 
 public class TargetProcessor implements Processor {
     private final Processor processor;
-    private String description;
     private String smaliClass;
     private Context context;
 
@@ -27,7 +30,7 @@ public class TargetProcessor implements Processor {
     public boolean process(Context context) {
         this.context = context;
 
-        LogUtil.start("TargetFileProcessor");
+        LogUtil.start("TargetProcessor");
         try {
             // 注意要使用TargetFileSmaliPath进行解析
             String path = findTargetFileSmaliPath(context.getDirName());
@@ -41,15 +44,9 @@ public class TargetProcessor implements Processor {
             e.printStackTrace();
         }
 
-        try {
-            List<String> targetSourceStringList = IOUtil.read(context.getTargetSource());
-            for (String str : targetSourceStringList) {
-                processTargetSourceString(str);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        LogUtil.end("TargetFileProcessor");
+        processSourceJSON(context.getSourceFile());
+        processPermissionJSON(context.getPermissionFile());
+        LogUtil.end("TargetProcessor");
 
         return processor.process(this.context);
     }
@@ -116,36 +113,55 @@ public class TargetProcessor implements Processor {
                 methodName, targetString, smaliClass, null));
     }
 
-    private void processTargetSourceString(String str) {
-        if (str.startsWith(STRING_DESCRIPTION_SYMBOL)) {
-            processDescriptionString(str);
-        } else {
-            processCodeString(str);
+    private void processSourceJSON(String sourceFile) {
+        try {
+            List<String> readList = IOUtil.read(sourceFile);
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String str : readList) {
+                stringBuilder.append(str);
+            }
+
+            JSONArray source = new JSONArray(stringBuilder.toString());
+            for (int i = 0; i < source.length(); i++) {
+                JSONObject jsonObject = source.getJSONObject(i);
+                String code = jsonObject.getString("code");
+                String description = jsonObject.getString("description");
+
+                if (code.contains(STRING_SMALI_CALL_SYMBOL)) {
+                    String smaliClass = SmaliUtil.splitStringGetFirst(code, STRING_SMALI_CALL_SYMBOL);
+                    String smaliCode = SmaliUtil.splitStringGetLast(code, STRING_SMALI_CALL_SYMBOL);
+                    String name = SmaliUtil.getMethodName(smaliCode);
+                    context.getMethodInfoList().add(new MethodInfo(
+                            name, smaliCode, smaliClass, description));
+                } else {
+                    context.getMethodInfoList().add(new MethodInfo(
+                            code, code, "", description));
+                }
+            }
+        } catch (JSONException | FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    private void processDescriptionString(String str) {
-        // # 注释代码
-        if (null == description) {
-            description = "";
+    private void processPermissionJSON(String permissionFile) {
+        try {
+            List<String> readList = IOUtil.read(permissionFile);
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String str : readList) {
+                stringBuilder.append(str);
+            }
+
+            JSONArray permission = new JSONArray(stringBuilder.toString());
+            for (int i = 0; i < permission.length(); i++) {
+                JSONObject jsonObject = permission.getJSONObject(i);
+                context.getPermissionInfoList().add(new PermissionInfo(
+                        jsonObject.getString("name"),
+                        jsonObject.getString("level"),
+                        jsonObject.getString("description"),
+                        jsonObject.getBoolean("isDeclared")));
+            }
+        } catch (JSONException | FileNotFoundException e) {
+            e.printStackTrace();
         }
-        description += SmaliUtil.replace(str, STRING_DESCRIPTION_SYMBOL, "");
-    }
-
-    private void processCodeString(String str) {
-        String smaliCode, smaliClass;
-
-        if (str.contains(STRING_SMALI_CALL_SYMBOL)) {
-            smaliCode = SmaliUtil.splitStringGetLast(str, STRING_SMALI_CALL_SYMBOL);
-            smaliClass = SmaliUtil.splitStringGetFirst(str, STRING_SMALI_CALL_SYMBOL);
-            context.getMethodInfoList().add(new MethodInfo(
-                    SmaliUtil.getMethodName(smaliCode), smaliCode, smaliClass, description));
-        } else {
-            smaliCode = str;
-            context.getMethodInfoList().add(new MethodInfo(
-                    "", smaliCode, "", description));
-        }
-
-        description = null; // 添加MethodInfo之后需要清空
     }
 }

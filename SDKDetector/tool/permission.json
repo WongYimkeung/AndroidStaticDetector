@@ -1,0 +1,38 @@
+[
+  {
+    "level": "dangerous",
+    "isDeclared": false,
+    "name": "android.permission.READ_PHONE_STATE",
+    "description": "读取手机状态"
+  },
+  {
+    "level": "dangerous",
+    "isDeclared": false,
+    "name": "android.permission.WRITE_EXTERNAL_STORAGE",
+    "description": "写入外部存储路径"
+  },
+  {
+    "level": "normal",
+    "isDeclared": false,
+    "name": "android.permission.ACCESS_WIFI_STATE",
+    "description": "读取Wifi状态"
+  },
+  {
+    "level": "normal",
+    "isDeclared": false,
+    "name": "android.permission.ACCESS_NETWORK_STATE",
+    "description": "读取网络状态"
+  },
+  {
+    "level": "normal",
+    "isDeclared": false,
+    "name": "android.permission.INTERNET",
+    "description": "使用网络"
+  },
+  {
+    "level": "dangerous",
+    "isDeclared": false,
+    "name": "android.permission.READ_EXTERNAL_STORAGE",
+    "description": "读取外部存储路径"
+  }
+]
