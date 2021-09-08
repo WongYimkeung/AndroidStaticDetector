@@ -1,0 +1,3 @@
+rootProject.name = 'ApkDetector'
+include 'detector'
+include 'json'

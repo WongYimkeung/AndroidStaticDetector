@@ -1,3 +1,0 @@
-rootProject.name = 'SDKDetector'
-include 'detector'
-include 'json'
