@@ -66,9 +66,17 @@ public class ArgumentsProcessor implements Processor {
                 case KEY_PERMISSION_FILE:
                     handlePermissionFile(splitString[1]);
                     break;
+                case KEY_CONFIG_FILE:
+                    handleConfigFile(splitString[1]);
+                    break;
                 default:
                     LogUtil.e("unknown arg " + splitString[0]);
                     break;
+            }
+
+            // 如果configFile存在，其他参数无效
+            if (KEY_CONFIG_FILE.equals(splitString[0])) {
+                break;
             }
         }
         return result;
