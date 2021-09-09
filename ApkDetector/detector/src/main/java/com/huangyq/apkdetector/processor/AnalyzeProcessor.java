@@ -88,8 +88,9 @@ public class AnalyzeProcessor implements Processor {
         for (String str : smaliStringList) {
             if (str.startsWith(STRING_SMALI_CLASS)) {
                 processClassString(str);
-            } else if (str.startsWith(STRING_SMALI_SOURCE)) {
-                processSourceString(str);
+                // 原计划使用.source来获取fileName，但是存在没有.source的情况
+                // 所以使用filePath来获取fileName
+                fileName = SmaliUtil.getFileNameByFilePath(filePath);
             } else if (str.startsWith(STRING_SMALI_METHOD)) {
                 processMethodString(str);
             } else if (str.startsWith(STRING_SMALI_LINE)) {
