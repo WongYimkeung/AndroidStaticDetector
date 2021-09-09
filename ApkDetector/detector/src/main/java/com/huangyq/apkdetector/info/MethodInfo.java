@@ -5,15 +5,15 @@ import java.util.List;
 
 public class MethodInfo {
     String name;    // 方法名称
-    String smaliCode;   // 方法的smali定义
     String smaliClass;  // 方法的smali所属类
+    String smaliMethod; // 方法的smali定义
     String description; // 方法的描述
     List<CallInfo> callInfoList = new ArrayList<>();    // 方法调用信息
 
-    public MethodInfo(String name, String smaliCode, String smaliClass, String description) {
+    public MethodInfo(String name, String smaliClass, String smaliMethod, String description) {
         this.name = name;
-        this.smaliCode = smaliCode;
         this.smaliClass = smaliClass;
+        this.smaliMethod = smaliMethod;
         this.description = description;
     }
 
@@ -21,8 +21,8 @@ public class MethodInfo {
         return name;
     }
 
-    public String getSmaliCode() {
-        return smaliCode;
+    public String getSmaliMethod() {
+        return smaliMethod;
     }
 
     public String getSmaliClass() {
@@ -42,9 +42,9 @@ public class MethodInfo {
      */
     public String getSmaliCallCode() {
         if (null == smaliClass || smaliClass.length() == 0) {
-            return smaliCode;
+            return smaliMethod;
         }
-        return smaliClass + "->" + smaliCode;
+        return smaliClass + "->" + smaliMethod;
     }
 
     public List<CallInfo> getCallInfoList() {
@@ -59,8 +59,8 @@ public class MethodInfo {
     public String toString() {
         return "MethodInfo{" +
                 "name='" + name + '\'' +
-                ", smaliCode='" + smaliCode + '\'' +
                 ", smaliClass='" + smaliClass + '\'' +
+                ", smaliMethod='" + smaliMethod + '\'' +
                 ", description='" + description + '\'' +
                 ", callInfoList=" + callInfoList +
                 '}';

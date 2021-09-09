@@ -115,7 +115,7 @@ public class TargetProcessor implements Processor {
         String smaliMethod = SmaliUtil.splitStringGetLast(str, " ");
         String methodName = SmaliUtil.splitStringGetFirst(smaliMethod, "\\(");
         context.getMethodInfoList().add(new MethodInfo(
-                methodName, smaliMethod, smaliClass, null));
+                methodName, smaliClass, smaliMethod, null));
     }
 
     private void processSourceJSON(String sourceFile) {
@@ -134,13 +134,13 @@ public class TargetProcessor implements Processor {
 
                 if (code.contains(STRING_SMALI_CALL_SYMBOL)) {
                     String smaliClass = SmaliUtil.splitStringGetFirst(code, STRING_SMALI_CALL_SYMBOL);
-                    String smaliCode = SmaliUtil.splitStringGetLast(code, STRING_SMALI_CALL_SYMBOL);
-                    String name = SmaliUtil.getMethodName(smaliCode);
+                    String smaliMethod = SmaliUtil.splitStringGetLast(code, STRING_SMALI_CALL_SYMBOL);
+                    String methodName = SmaliUtil.getMethodName(smaliMethod);
                     context.getMethodInfoList().add(new MethodInfo(
-                            name, smaliCode, smaliClass, description));
+                            methodName, smaliClass, smaliMethod, description));
                 } else {
                     context.getMethodInfoList().add(new MethodInfo(
-                            code, code, "", description));
+                            code, "", code, description));
                 }
             }
         } catch (JSONException | FileNotFoundException e) {

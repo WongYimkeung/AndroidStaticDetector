@@ -67,8 +67,8 @@ public class PdfProcessor implements Processor {
             methodTable.addCell(methodInfo.getName());
             methodTable.addCell(methodInfo.getCallInfoSize() + "");
             LogUtil.d("name: " + methodInfo.getName());
-            LogUtil.d("smaliCode: " + methodInfo.getSmaliCode());
             LogUtil.d("smaliClass: " + methodInfo.getSmaliClass());
+            LogUtil.d("smaliMethod: " + methodInfo.getSmaliMethod());
             LogUtil.d("description: " + methodInfo.getDescription());
             StringBuilder stringBuilder = new StringBuilder();
             for (CallInfo callInfo : methodInfo.getCallInfoList()) {
