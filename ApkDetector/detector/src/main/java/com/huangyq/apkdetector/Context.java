@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.huangyq.apkdetector.Constant.STRING_ANDROID_MANIFEST;
-import static com.huangyq.apkdetector.Constant.STRING_SMALI_SUFFIX;
 
 public class Context {
     private String apkPath;   // 待反编译Apk路径
@@ -72,10 +71,6 @@ public class Context {
 
     public List<PermissionInfo> getPermissionInfoList() {
         return permissionInfoList;
-    }
-
-    public String getTargetFileWithSmaliSuffix() {
-        return interfaceFile + STRING_SMALI_SUFFIX;
     }
 
     public String getAndroidManifestPath() {

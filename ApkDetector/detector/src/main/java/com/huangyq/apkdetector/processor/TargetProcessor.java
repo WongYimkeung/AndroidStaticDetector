@@ -19,7 +19,6 @@ import static com.huangyq.apkdetector.Constant.*;
 
 public class TargetProcessor implements Processor {
     private final Processor processor;
-    private String smaliClass;
     private Context context;
 
     public TargetProcessor(Processor processor) {
@@ -31,24 +30,37 @@ public class TargetProcessor implements Processor {
         this.context = context;
 
         LogUtil.start("TargetProcessor");
-        try {
-            // 注意要使用TargetFileSmaliPath进行解析
-            String path = findTargetFileSmaliPath(context.getDirName());
-            if (null != path) {
-                List<String> targetFileStringList = IOUtil.read(path);
-                for (String str : targetFileStringList) {
-                    processTargetFileString(str);
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        processInterfaceFile(context.getInterfaceFile());
         processSourceJSON(context.getSourceFile());
         processPermissionJSON(context.getPermissionFile());
         LogUtil.end("TargetProcessor");
 
         return processor.process(this.context);
+    }
+
+    private void processInterfaceFile(String interfaceFile) {
+        if (null == interfaceFile || interfaceFile.length() == 0) {
+            // 没有配置interfaceFile，直接返回null
+            return;
+        }
+
+        try {
+            String path = findInterfaceFileSmaliPath(context.getDirName());
+            if (null != path) {
+                List<String> targetFileStringList = IOUtil.read(path);
+                String smaliClass = "";
+
+                for (String str : targetFileStringList) {
+                    if (str.startsWith(STRING_SMALI_CLASS)) {
+                        smaliClass = processClassString(str);
+                    } else if (str.startsWith(STRING_SMALI_METHOD)) {
+                        processMethodString(str, smaliClass);
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -57,7 +69,7 @@ public class TargetProcessor implements Processor {
      * @param dirName 反编译文件夹名称
      * @return 接口文件路径
      */
-    private String findTargetFileSmaliPath(String dirName) {
+    private String findInterfaceFileSmaliPath(String dirName) {
         File decompileDir = new File(dirName);
         if (!decompileDir.exists()) {
             return null;
@@ -68,10 +80,11 @@ public class TargetProcessor implements Processor {
             return null;
         }
 
+        String interfaceFileSmali = File.separator
+                + context.getInterfaceFile() + STRING_SMALI_SUFFIX;
         for (File file : files) {
             if (file.isDirectory() && file.getName().startsWith(STRING_SMALI)) {
-                File targetFile = new File(file.getPath() + File.separator +
-                        context.getTargetFileWithSmaliSuffix());
+                File targetFile = new File(file.getPath() + interfaceFileSmali);
                 if (targetFile.exists()) {
                     LogUtil.r(targetFile.getPath());
                     return targetFile.getPath();
@@ -82,22 +95,14 @@ public class TargetProcessor implements Processor {
         return null;
     }
 
-    private void processTargetFileString(String str) {
-        if (str.startsWith(STRING_SMALI_CLASS)) {
-            processClassString(str);
-        } else if (str.startsWith(STRING_SMALI_METHOD)) {
-            processMethodString(str);
-        }
-    }
-
     /**
      * 获取smali代码的类名
      *
      * @param str smali代码
      */
-    private void processClassString(String str) {
-        // .class public interface abstract Lcom/huangyq/sdkdetector/Processor;
-        smaliClass = SmaliUtil.splitStringGetLast(str, " ");
+    private String processClassString(String str) {
+        // .class public interface abstract Lcom/huangyq/apkdetector/Processor;
+        return SmaliUtil.splitStringGetLast(str, " ");
     }
 
     /**
@@ -105,12 +110,12 @@ public class TargetProcessor implements Processor {
      *
      * @param str smali代码
      */
-    private void processMethodString(String str) {
+    private void processMethodString(String str, String smaliClass) {
         // .method public abstract init(Landroid/content/Context;)V
-        String targetString = SmaliUtil.splitStringGetLast(str, " ");
-        String methodName = SmaliUtil.splitStringGetFirst(targetString, "\\(");
+        String smaliMethod = SmaliUtil.splitStringGetLast(str, " ");
+        String methodName = SmaliUtil.splitStringGetFirst(smaliMethod, "\\(");
         context.getMethodInfoList().add(new MethodInfo(
-                methodName, targetString, smaliClass, null));
+                methodName, smaliMethod, smaliClass, null));
     }
 
     private void processSourceJSON(String sourceFile) {
